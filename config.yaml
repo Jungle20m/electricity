@@ -1,0 +1,28 @@
+# web cung cấp các cấu hình khởi chạy web server
+web:
+  host:
+  port: 8000
+
+# mysql: cấu hình để service electricity kết nối đến server mysql
+mysql:
+  dns: user:password@tcp(host:port)/database?charset=utf8mb4&parseTime=True&loc=Local
+
+# log: cấu hình hệ thống log.
+log:
+  # output int. Các giá trị không hợp lệ được coi như mặc định
+  # 0: mặc định, log ra terminal - dành cho dev
+  # 1: log ra file. file này nằm trong thư mục {HOME}/.etracker/logdev - dành cho production
+  output: 0
+  # formatter: kiểu format của output
+  # 0: mặc định, format text - dành cho dev
+  # 1: format json - dành cho production
+  formatter: 0
+  # level: level log. giá trị càng lớn thì thông tin càng nhiều. Nằm ngoài giá trị hợp lệ thì lấy mặc định = 6
+  # 0: PanicLevel
+  # 1: FatalLevel
+  # 2: ErrorLevel
+  # 3: WarnLevel
+  # 4: InfoLevel
+  # 5: DebugLevel
+  # 6: TraceLevel
+  level: 6
