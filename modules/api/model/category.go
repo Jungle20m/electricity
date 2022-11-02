@@ -3,12 +3,12 @@ package model
 import "time"
 
 type CategoryModel struct {
-	ID          int32      `gorm:"id"`
+	ID          int32      `gorm:"-"`
 	Name        string     `gorm:"name"`
 	Description string     `gorm:"description"`
 	Active      int32      `gorm:"active"`
-	CreateTime  *time.Time `gorm:"create_time"`
-	UpdateTime  *time.Time `gorm:"update_time"`
+	CreateTime  *time.Time `gorm:"-"`
+	UpdateTime  *time.Time `gorm:"-"`
 }
 
 func (CategoryModel) TableName() string {

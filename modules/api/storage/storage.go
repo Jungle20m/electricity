@@ -2,10 +2,10 @@ package storage
 
 import "gorm.io/gorm"
 
-type storage struct {
-	DB *gorm.DB
+type Storage struct {
+	db *gorm.DB
 }
 
-func NewStorage(db *gorm.DB) *storage {
-	return &storage{}
+func NewStorage(db *gorm.DB) *Storage {
+	return &Storage{db: db}
 }
