@@ -2,7 +2,7 @@ package storage
 
 import (
 	"context"
-	"github.com/Jungle20m/electricity/modules/api/model"
+	"github.com/Jungle20m/electricity/module/api/model"
 )
 
 func (s *Storage) InsertService(ctx context.Context, service model.ServiceModel) error {

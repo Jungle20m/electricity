@@ -4,9 +4,9 @@ import "time"
 
 type CategoryModel struct {
 	ID          int32      `gorm:"-"`
-	Name        string     `gorm:"name"`
-	Description string     `gorm:"description"`
-	Active      int32      `gorm:"active"`
+	Name        string     `gorm:"column:name"`
+	Description string     `gorm:"column:description"`
+	Active      int32      `gorm:"column:active"`
 	CreateTime  *time.Time `gorm:"-"`
 	UpdateTime  *time.Time `gorm:"-"`
 }
