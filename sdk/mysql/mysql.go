@@ -8,18 +8,44 @@ import (
 	"time"
 )
 
-func New(dns string) (*gorm.DB, error) {
+const (
+	_defaultMaxOpenConnection     = 100
+	_defaultMaxIdleConnection     = 10
+	_defaultConnectionMaxLifetime = time.Hour
+)
+
+type Mysql struct {
+	maxOpenConnection     int
+	maxIdleConnection     int
+	connectionMaxLifetime time.Duration
+
+	DB *gorm.DB
+}
+
+func New(dns string, opts ...Option) (*Mysql, error) {
+	msql := &Mysql{
+		maxOpenConnection:     _defaultMaxOpenConnection,
+		maxIdleConnection:     _defaultMaxIdleConnection,
+		connectionMaxLifetime: _defaultConnectionMaxLifetime,
+	}
+
+	for _, opt := range opts {
+		opt(msql)
+	}
+
 	sqlDB, err := sql.Open("mysql", dns)
 	if err != nil {
 		return nil, err
 	}
-	sqlDB.SetMaxOpenConns(100)
-	sqlDB.SetMaxIdleConns(10)
-	sqlDB.SetConnMaxLifetime(time.Hour)
+	sqlDB.SetMaxOpenConns(msql.maxOpenConnection)
+	sqlDB.SetMaxIdleConns(msql.maxIdleConnection)
+	sqlDB.SetConnMaxLifetime(msql.connectionMaxLifetime)
 
 	gormDB, err := gorm.Open(mysql.New(mysql.Config{
 		Conn: sqlDB,
 	}), &gorm.Config{Logger: logger.Default.LogMode(logger.Silent)})
 
-	return gormDB, err
+	msql.DB = gormDB
+
+	return msql, err
 }

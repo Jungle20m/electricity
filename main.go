@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/Jungle20m/electricity/config"
-	"log"
-
 	"github.com/Jungle20m/electricity/sdk/mysql"
+	"log"
+	"time"
 )
 
 func init() {
@@ -14,14 +14,21 @@ func init() {
 	}
 }
 
+type Data struct {
+	string `json:"data"`
+}
+
 func main() {
 	dns := "anhnv:anhnv!@#456@tcp(1.53.252.177:3306)/healthnet?charset=utf8mb4&parseTime=True&loc=Local"
 
-	db, err := mysql.New(dns)
+	msql, err := mysql.New(
+		dns,
+		mysql.WithConnectionMaxLifetime(time.Hour),
+		mysql.WithMaxIdleConnection(10),
+		mysql.WithMaxOpenConnection(100))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println(db)
-
+	fmt.Printf("mysql: %+v", msql)
 }
