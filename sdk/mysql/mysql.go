@@ -23,6 +23,8 @@ type Mysql struct {
 }
 
 func New(dns string, opts ...Option) (*Mysql, error) {
+	//anhnv:anhnv!@#456@tcp(1.53.252.177:3306)/healthnet?charset=utf8mb4&parseTime=True&loc=Local
+
 	msql := &Mysql{
 		maxOpenConnection:     _defaultMaxOpenConnection,
 		maxIdleConnection:     _defaultMaxIdleConnection,

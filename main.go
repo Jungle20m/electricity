@@ -2,33 +2,51 @@ package main
 
 import (
 	"fmt"
+	"github.com/Jungle20m/electricity/component"
 	"github.com/Jungle20m/electricity/config"
+	"github.com/Jungle20m/electricity/internal/httpserver/app"
+	"github.com/Jungle20m/electricity/sdk/httpserver"
 	"github.com/Jungle20m/electricity/sdk/mysql"
+	"github.com/gin-gonic/gin"
 	"log"
-	"time"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 func init() {
-	if err := config.LoadConfig("config.yaml"); err != nil {
+	if err := config.LoadConfig("config/config.yaml"); err != nil {
 		log.Fatal(err)
 	}
 }
 
-type Data struct {
-	string `json:"data"`
-}
-
 func main() {
-	dns := "anhnv:anhnv!@#456@tcp(1.53.252.177:3306)/healthnet?charset=utf8mb4&parseTime=True&loc=Local"
-
-	msql, err := mysql.New(
-		dns,
-		mysql.WithConnectionMaxLifetime(time.Hour),
-		mysql.WithMaxIdleConnection(10),
-		mysql.WithMaxOpenConnection(100))
+	msql, err := mysql.New("anhnv:anhnv!@#456@tcp(1.53.252.177:3306)/healthnet?charset=utf8mb4&parseTime=True&loc=Local")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("mysql: %+v", msql)
+	// App context
+	appCtx := component.NewAppContext(msql)
+
+	handler := gin.New()
+	app.NewRouter(handler, appCtx)
+	httpserver := httpserver.New(handler)
+
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
+
+	select {
+	case s := <-interrupt:
+		fmt.Println("app - Run - signal: " + s.String())
+	case err := <-httpserver.Notify():
+		fmt.Println(fmt.Errorf("app - Run - httpServer.Notify: %w", err))
+	}
+
+	// Shutdown
+	err = httpserver.Shutdown()
+	if err != nil {
+		fmt.Println(fmt.Errorf("app - Run - httpServer.Shutdown: %w", err))
+	}
+
 }
