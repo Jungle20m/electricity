@@ -29,6 +29,7 @@ func main() {
 	// App context
 	appCtx := component.NewAppContext(msql)
 
+	gin.SetMode(gin.ReleaseMode)
 	handler := gin.New()
 	app.NewRouter(handler, appCtx)
 	httpserver := httpserver.New(handler)

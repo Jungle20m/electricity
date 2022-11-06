@@ -2,6 +2,7 @@ package httpserver
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"time"
 )
@@ -9,7 +10,7 @@ import (
 const (
 	_defaultReadTimeout     = 10 * time.Second
 	_defaultWriteTimeout    = 10 * time.Second
-	_defaultAddr            = ":6868"
+	_defaultAddr            = ":8000"
 	_defaultShutdownTimeout = 5 * time.Second
 )
 
@@ -53,6 +54,7 @@ func New(handler http.Handler, opts ...Option) *Server {
 
 func (s *Server) start() {
 	go func() {
+		fmt.Printf("server listening in %s\n", s.server.Addr)
 		s.notify <- s.server.ListenAndServe()
 		close(s.notify)
 	}()

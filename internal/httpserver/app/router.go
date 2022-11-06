@@ -2,7 +2,7 @@ package app
 
 import (
 	"github.com/Jungle20m/electricity/component"
-	"github.com/Jungle20m/electricity/internal/httpserver/module/order/transportation"
+	httpTransport "github.com/Jungle20m/electricity/internal/module/order/http-transport"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,6 +16,6 @@ func NewRouter(handler *gin.Engine, appCtx component.AppContext) {
 	// Router
 	h := handler.Group("/base")
 	{
-		h.GET("/something", transportation.GetSomething(appCtx))
+		h.GET("/something", httpTransport.GetSomething(appCtx))
 	}
 }
