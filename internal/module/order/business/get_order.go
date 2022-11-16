@@ -21,6 +21,6 @@ func NewGetOrderBusiness(appCtx component.AppContext, storage GetOrderStorageInt
 	}
 }
 
-func (business *getOrderBusiness) GetOrder(ctx context.Context) {
+func (business *getOrderBusiness) GetCustomerOrders(ctx context.Context) {
 	fmt.Println("get order business")
 }

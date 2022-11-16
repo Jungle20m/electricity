@@ -3,18 +3,52 @@ package http_transport
 import (
 	"fmt"
 	"github.com/Jungle20m/electricity/component"
+	orderBusiness "github.com/Jungle20m/electricity/internal/module/order/business"
+	orderStorage "github.com/Jungle20m/electricity/internal/module/order/storage"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-func GetSomething(appCtx component.AppContext) gin.HandlerFunc {
+func GetCustomerOrders(appCtx component.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		msql := appCtx.GetMysql()
+		customerCode := c.Param("customer_code")
 
-		fmt.Printf("connection: %+v\n", msql.DB)
+		mysqlDB := appCtx.GetMysql().DB
+		storage := orderStorage.NewStorage(mysqlDB)
+		business := orderBusiness.NewGetOrderBusiness(appCtx, storage)
+
+		business.GetCustomerOrders(c.Request.Context())
+		fmt.Println(customerCode)
 
 		c.JSON(http.StatusOK, gin.H{
-			"data": "success",
+			"data": "customer orders",
+		})
+	}
+}
+
+func GetCustomerOrder(appCtx component.AppContext) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		//msql := appCtx.GetMysql()
+		c.JSON(http.StatusOK, gin.H{
+			"data": "customer order",
+		})
+	}
+}
+
+func GetElectricianOrders(appCtx component.AppContext) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		//msql := appCtx.GetMysql()
+		c.JSON(http.StatusOK, gin.H{
+			"data": "electrician orders",
+		})
+	}
+}
+
+func GetElectricianOrder(appCtx component.AppContext) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		//msql := appCtx.GetMysql()
+		c.JSON(http.StatusOK, gin.H{
+			"data": "electrician order",
 		})
 	}
 }
