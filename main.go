@@ -21,6 +21,7 @@ func init() {
 }
 
 func main() {
+	// Mysql
 	msql, err := mysql.New("anhnv:anhnv!@#456@tcp(1.53.252.177:3306)/healthnet?charset=utf8mb4&parseTime=True&loc=Local")
 	if err != nil {
 		log.Fatal(err)
@@ -29,14 +30,15 @@ func main() {
 	// App context
 	appCtx := component.NewAppContext(msql)
 
+	// Http server
 	gin.SetMode(gin.ReleaseMode)
 	handler := gin.New()
 	app.NewRouter(handler, appCtx)
 	httpserver := httpserver.New(handler)
 
+	// Listen signal
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
-
 	select {
 	case s := <-interrupt:
 		fmt.Println("app - Run - signal: " + s.String())

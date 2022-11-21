@@ -2,7 +2,7 @@ package app
 
 import (
 	"github.com/Jungle20m/electricity/component"
-	orderHttpTransport "github.com/Jungle20m/electricity/internal/module/order/http-transport"
+	grabHttpTransport "github.com/Jungle20m/electricity/internal/module/grab/http-transport"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,7 +18,11 @@ func NewRouter(handler *gin.Engine, appCtx component.AppContext) {
 	{
 		// Orders
 		order := v2.Group("/orders")
-		order.GET("/customer/:customer_code", orderHttpTransport.GetCustomerOrders(appCtx))
-		order.GET("/:order_code/customer", orderHttpTransport.GetCustomerOrder(appCtx))
+		order.GET("/customer/:customer_code", grabHttpTransport.GetCustomerOrders(appCtx))
+		order.GET("/:order_code/customer", grabHttpTransport.GetCustomerOrder(appCtx))
+
+		// Services
+		service := v2.Group("/services")
+		service.POST("/", grabHttpTransport.CreateService(appCtx))
 	}
 }

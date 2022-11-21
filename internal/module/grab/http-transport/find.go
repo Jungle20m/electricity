@@ -3,8 +3,8 @@ package http_transport
 import (
 	"fmt"
 	"github.com/Jungle20m/electricity/component"
-	orderBusiness "github.com/Jungle20m/electricity/internal/module/order/business"
-	orderStorage "github.com/Jungle20m/electricity/internal/module/order/storage"
+	orderBusiness "github.com/Jungle20m/electricity/internal/module/grab/business"
+	orderStorage "github.com/Jungle20m/electricity/internal/module/grab/storage"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
