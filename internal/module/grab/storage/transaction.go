@@ -2,7 +2,7 @@ package storage
 
 import "context"
 
-func (s *Storage) WithTransaction(ctx context.Context, fn func(*Storage) error) error {
+func (s *Storage) WithTx(ctx context.Context, fn func(storage *Storage) error) error {
 	tx := s.db.Begin()
 	defer tx.Rollback()
 
@@ -14,3 +14,6 @@ func (s *Storage) WithTransaction(ctx context.Context, fn func(*Storage) error) 
 	tx.Commit()
 	return nil
 }
+
+//
+//func (s *Storage) ExtractTx(ctx)

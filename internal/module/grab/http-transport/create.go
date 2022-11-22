@@ -17,12 +17,19 @@ func CreateService(appCtx component.AppContext) gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": err,
 			})
+			return
 		}
 
 		storage := gabStorage.NewStorage(appCtx.GetMysql().DB)
 		business := grabBusiness.NewCreateServiceBusiness(appCtx, storage)
 
-		business.CreateNewService(c.Request.Context(), requestData)
+		err := business.CreateNewService(c.Request.Context(), requestData)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
 
 		c.JSON(http.StatusOK, gin.H{
 			"data": "create service",
