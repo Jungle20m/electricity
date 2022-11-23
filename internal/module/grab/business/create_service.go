@@ -4,20 +4,19 @@ import (
 	"context"
 	"github.com/Jungle20m/electricity/component"
 	grabModel "github.com/Jungle20m/electricity/internal/module/grab/model"
-	grabStorage "github.com/Jungle20m/electricity/internal/module/grab/storage"
 )
 
-//type CreateServiceStorageInterface interface {
-//	InsertService(ctx context.Context, service grabModel.ServiceCreate) error
-//	WithTransaction(ctx context.Context, fn func(storage CreateServiceStorageInterface) error) error
-//}
+type CreateServiceStorageInterface interface {
+	WithTx(ctx context.Context, fn func(c context.Context) error) error
+	InsertService(ctx context.Context, service grabModel.ServiceCreate) error
+}
 
 type createServiceBusiness struct {
 	appCtx  component.AppContext
-	storage *grabStorage.Storage
+	storage CreateServiceStorageInterface
 }
 
-func NewCreateServiceBusiness(appCtx component.AppContext, storage *grabStorage.Storage) *createServiceBusiness {
+func NewCreateServiceBusiness(appCtx component.AppContext, storage CreateServiceStorageInterface) *createServiceBusiness {
 	return &createServiceBusiness{
 		appCtx:  appCtx,
 		storage: storage,
@@ -25,9 +24,9 @@ func NewCreateServiceBusiness(appCtx component.AppContext, storage *grabStorage.
 }
 
 func (business *createServiceBusiness) CreateNewService(ctx context.Context, serviceCreate grabModel.ServiceCreate) error {
-	err := business.storage.WithTx(ctx, func(storage *grabStorage.Storage) error {
+	err := business.storage.WithTx(ctx, func(txContext context.Context) error {
 		serviceCreate.Active = 1
-		err := storage.InsertService(ctx, serviceCreate)
+		err := business.storage.InsertService(txContext, serviceCreate)
 		if err != nil {
 			return err
 		}
