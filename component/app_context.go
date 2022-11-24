@@ -8,6 +8,7 @@ type AppContext interface {
 
 type appCtx struct {
 	Mysql *mysql.Mysql
+	Log   string
 }
 
 func NewAppContext(msql *mysql.Mysql) *appCtx {
