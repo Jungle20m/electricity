@@ -8,7 +8,6 @@ import (
 	mHttpServer "github.com/Jungle20m/electricity/sdk/httpserver"
 	mLogger "github.com/Jungle20m/electricity/sdk/logger"
 	mMysql "github.com/Jungle20m/electricity/sdk/mysql"
-	"github.com/gin-gonic/gin"
 	"go.uber.org/fx"
 )
 
@@ -47,9 +46,7 @@ func NewAppContext(conf *config.Config, log *mLogger.Logger, msql *mMysql.Mysql)
 }
 
 func NewHttpServer(appCtx component.AppContext) (*mHttpServer.Server, error) {
-	gin.SetMode(gin.ReleaseMode)
-	handler := gin.New()
-	httpserver.NewRouter(handler, appCtx)
+	handler := httpserver.NewHandler(appCtx)
 	server := mHttpServer.New(handler)
 	return server, nil
 }

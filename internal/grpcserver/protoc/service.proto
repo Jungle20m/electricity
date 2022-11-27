@@ -1,0 +1,6 @@
+syntax = "proto3";
+
+package service;
+
+option go_package = "internal/grpcserver/protoc/service";
+

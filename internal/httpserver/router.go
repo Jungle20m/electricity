@@ -6,7 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewRouter(handler *gin.Engine, appCtx component.AppContext) {
+func NewHandler(appCtx component.AppContext) *gin.Engine {
+	// Init handler
+	gin.SetMode(gin.ReleaseMode)
+	handler := gin.New()
+
 	// Middleware
 	handler.Use(gin.Logger())
 	handler.Use(gin.Recovery())
@@ -25,4 +29,6 @@ func NewRouter(handler *gin.Engine, appCtx component.AppContext) {
 		service := v2.Group("/services")
 		service.POST("/", grabHttpTransport.CreateService(appCtx))
 	}
+
+	return handler
 }
