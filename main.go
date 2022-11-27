@@ -1,69 +1,87 @@
 package main
 
 import (
-	"fmt"
+	"context"
 	"github.com/Jungle20m/electricity/component"
 	"github.com/Jungle20m/electricity/config"
-	"github.com/Jungle20m/electricity/internal/httpserver/app"
-	"github.com/Jungle20m/electricity/sdk/httpserver"
-	mLog "github.com/Jungle20m/electricity/sdk/logger"
-	"github.com/Jungle20m/electricity/sdk/mysql"
+	"github.com/Jungle20m/electricity/internal/httpserver"
+	mHttpServer "github.com/Jungle20m/electricity/sdk/httpserver"
+	mLogger "github.com/Jungle20m/electricity/sdk/logger"
+	mMysql "github.com/Jungle20m/electricity/sdk/mysql"
 	"github.com/gin-gonic/gin"
-	"log"
-	"os"
-	"os/signal"
-	"syscall"
+	"go.uber.org/fx"
 )
 
-func init() {
-	if err := config.LoadConfig("config/config.yaml"); err != nil {
-		log.Fatal(err)
+func NewConfig() (*config.Config, error) {
+	conf, err := config.NewConfig("config/config.yaml")
+	if err != nil {
+		return nil, err
 	}
+	return conf, nil
 }
 
-func main() {
-
-	logger, err := mLog.New(
-		mLog.WithOutputMode(1),
-		mLog.WithFormatterMode(1),
-		mLog.WithLevel(6),
-		mLog.WithDirectory("D:\\Research\\electricity\\log"),
-		mLog.WithFileName("test.log"))
+func NewLogger(conf *config.Config) (*mLogger.Logger, error) {
+	logger, err := mLogger.New(
+		mLogger.WithLevel(conf.Log.Level),
+		mLogger.WithFormatterMode(conf.Log.Formatter),
+		mLogger.WithOutputMode(conf.Log.Output),
+		mLogger.WithDirectory(conf.Log.Folder),
+		mLogger.WithFileName(conf.Log.FileName))
 	if err != nil {
-		fmt.Println(err)
+		return nil, err
 	}
+	return logger, nil
+}
 
-	logger.Infof("test logger")
-
-	// Mysql
-	msql, err := mysql.New("anhnv:anhnv!@#456@tcp(1.53.252.177:3306)/healthnet?charset=utf8mb4&parseTime=True&loc=Local")
+func NewMysql(conf *config.Config) (*mMysql.Mysql, error) {
+	msql, err := mMysql.New(conf.Mysql.Dns)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
+	return msql, nil
+}
 
-	// App context
-	appCtx := component.NewAppContext(msql)
+func NewAppContext(conf *config.Config, log *mLogger.Logger, msql *mMysql.Mysql) component.AppContext {
+	appCtx := component.NewAppContext(msql, log, conf)
+	return appCtx
+}
 
-	// Http server
+func NewHttpServer(appCtx component.AppContext) (*mHttpServer.Server, error) {
 	gin.SetMode(gin.ReleaseMode)
 	handler := gin.New()
-	app.NewRouter(handler, appCtx)
-	httpserver := httpserver.New(handler)
+	httpserver.NewRouter(handler, appCtx)
+	server := mHttpServer.New(handler)
+	return server, nil
+}
 
-	// Listen signal
-	interrupt := make(chan os.Signal, 1)
-	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
-	select {
-	case s := <-interrupt:
-		fmt.Println("app - Run - signal: " + s.String())
-	case err := <-httpserver.Notify():
-		fmt.Println(fmt.Errorf("app - Run - httpServer.Notify: %w", err))
-	}
+func StartHTTPServer(lifecycle fx.Lifecycle, server *mHttpServer.Server) {
+	lifecycle.Append(
+		fx.Hook{
+			OnStart: func(context.Context) error {
+				server.Start()
+				return nil
+			},
+			OnStop: func(context.Context) error {
+				server.Shutdown()
+				return nil
+			},
+		},
+	)
+}
 
-	// Shutdown
-	err = httpserver.Shutdown()
-	if err != nil {
-		fmt.Println(fmt.Errorf("app - Run - httpServer.Shutdown: %w", err))
-	}
+func StartGrpcServer() {}
 
+func main() {
+	fx.New(
+		fx.Provide(
+			NewConfig,
+			NewLogger,
+			NewMysql,
+			NewAppContext,
+			NewHttpServer,
+		),
+		fx.Invoke(
+			StartHTTPServer,
+		),
+	).Run()
 }

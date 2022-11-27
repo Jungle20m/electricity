@@ -1,4 +1,4 @@
-package app
+package httpserver
 
 import (
 	"github.com/Jungle20m/electricity/component"

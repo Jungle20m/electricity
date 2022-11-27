@@ -1,7 +1,6 @@
 package logger
 
 import (
-	"fmt"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"path/filepath"
@@ -38,8 +37,6 @@ func New(opts ...Option) (*Logger, error) {
 	for _, opt := range opts {
 		opt(mLog)
 	}
-
-	fmt.Printf("logger instance: %+v\n", mLog)
 
 	switch mLog.formatterMode {
 	case 1:

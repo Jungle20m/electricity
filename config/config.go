@@ -6,6 +6,8 @@ import (
 	"os"
 )
 
+const _defaultConfigFile = "config/config.yaml"
+
 type WebConfig struct {
 	Host string `yaml:"host"`
 	Port string `yaml:"port"`
@@ -16,26 +18,30 @@ type MysqlConfig struct {
 }
 
 type LogConfig struct {
-	Output    string `yaml:"output"`
-	Formatter string `yaml:"formatter"`
-	Level     string `yaml:"level"`
+	Output    int    `yaml:"output"`
+	Formatter int    `yaml:"formatter"`
+	Level     int    `yaml:"level"`
+	Folder    string `yaml:"folder"`
+	FileName  string `yaml:"file_name"`
 }
 
-type ElectricityConfig struct {
+type Config struct {
 	Web   WebConfig   `yaml:"web"`
-	Mysql MysqlConfig `yaml:"dns"`
+	Mysql MysqlConfig `yaml:"mysql"`
 	Log   LogConfig   `yaml:"log"`
 }
 
-var ServiceConfig ElectricityConfig
-
-func LoadConfig(filename string) error {
-	confData, err := os.ReadFile(filename)
+func NewConfig(configFile string) (*Config, error) {
+	if configFile == "" {
+		configFile = _defaultConfigFile
+	}
+	confData, err := os.ReadFile(configFile)
 	if err != nil {
-		return fmt.Errorf("loading config file failed: %v", err)
+		return nil, fmt.Errorf("loading config file failed: %v", err)
 	}
-	if err = yaml.Unmarshal(confData, &ServiceConfig); err != nil {
-		return fmt.Errorf("reading config failed: %v", err)
+	var config Config
+	if err = yaml.Unmarshal(confData, &config); err != nil {
+		return nil, fmt.Errorf("reading config failed: %v", err)
 	}
-	return nil
+	return &config, nil
 }
