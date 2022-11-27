@@ -1,7 +1,6 @@
 package http_transport
 
 import (
-	"fmt"
 	"github.com/Jungle20m/electricity/component"
 	orderBusiness "github.com/Jungle20m/electricity/internal/module/grab/business"
 	orderStorage "github.com/Jungle20m/electricity/internal/module/grab/storage"
@@ -11,6 +10,8 @@ import (
 
 func GetCustomerOrders(appCtx component.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		logger := appCtx.GetLogger()
+
 		customerCode := c.Param("customer_code")
 
 		mysqlDB := appCtx.GetMysql().DB
@@ -18,7 +19,8 @@ func GetCustomerOrders(appCtx component.AppContext) gin.HandlerFunc {
 		business := orderBusiness.NewGetOrderBusiness(appCtx, storage)
 
 		business.GetCustomerOrders(c.Request.Context())
-		fmt.Println(customerCode)
+
+		logger.Info(customerCode)
 
 		c.JSON(http.StatusOK, gin.H{
 			"data": "customer orders",

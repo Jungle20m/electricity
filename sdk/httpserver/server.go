@@ -2,7 +2,6 @@ package httpserver
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"time"
 )
@@ -16,7 +15,6 @@ const (
 
 type Server struct {
 	server          *http.Server
-	notify          chan error
 	shutdownTimeout time.Duration
 }
 
@@ -36,37 +34,24 @@ func New(handler http.Handler, opts ...Option) *Server {
 		BaseContext:       nil,
 		ConnContext:       nil,
 	}
-
 	s := &Server{
 		server:          httpServer,
-		notify:          make(chan error, 1),
 		shutdownTimeout: _defaultShutdownTimeout,
 	}
-
 	for _, opt := range opts {
 		opt(s)
 	}
-
-	s.start()
-
 	return s
 }
 
-func (s *Server) start() {
+func (s *Server) Start() {
 	go func() {
-		fmt.Printf("server listening in %s\n", s.server.Addr)
-		s.notify <- s.server.ListenAndServe()
-		close(s.notify)
+		s.server.ListenAndServe()
 	}()
-}
-
-func (s *Server) Notify() <-chan error {
-	return s.notify
 }
 
 func (s *Server) Shutdown() error {
 	ctx, cancel := context.WithTimeout(context.Background(), s.shutdownTimeout)
 	defer cancel()
-
 	return s.server.Shutdown(ctx)
 }
