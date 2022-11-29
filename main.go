@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/Jungle20m/electricity/component"
 	"github.com/Jungle20m/electricity/config"
+	mGrpcServer "github.com/Jungle20m/electricity/internal/grpcserver"
 	"github.com/Jungle20m/electricity/internal/httpserver"
 	mHttpServer "github.com/Jungle20m/electricity/sdk/httpserver"
 	mLogger "github.com/Jungle20m/electricity/sdk/logger"
@@ -66,7 +67,10 @@ func StartHTTPServer(lifecycle fx.Lifecycle, server *mHttpServer.Server) {
 	)
 }
 
-func StartGrpcServer() {}
+func StartGrpcServer(appCtx component.AppContext) {
+	grpcServer := mGrpcServer.NewServer(appCtx)
+	grpcServer.Serve()
+}
 
 func main() {
 	fx.New(
@@ -79,6 +83,7 @@ func main() {
 		),
 		fx.Invoke(
 			StartHTTPServer,
+			StartGrpcServer,
 		),
 	).Run()
 }
