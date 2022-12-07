@@ -1,0 +1,38 @@
+definitions:
+  httpserver.message:
+    properties:
+      message:
+        type: string
+    type: object
+  httpserver.todo:
+    properties:
+      id:
+        type: string
+      task:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /todo/{id}:
+    get:
+      operationId: get-todo-by-id
+      parameters:
+      - description: todo ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpserver.todo'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httpserver.message'
+      summary: get a todo item by ID
+swagger: "2.0"

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package service;
 
-option go_package = "internal/module/grab/grpc-transport/protoc";
+option go_package = "internal/module/grab/grpc-transport/proto";
 
 
 service Order {

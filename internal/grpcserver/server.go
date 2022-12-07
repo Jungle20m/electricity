@@ -3,8 +3,9 @@ package grpcserver
 import (
 	"fmt"
 	"github.com/Jungle20m/electricity/component"
-	orderTransport "github.com/Jungle20m/electricity/internal/module/grab/grpc-transport"
+	grabTransport "github.com/Jungle20m/electricity/internal/module/grab/grpc-transport"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"net"
 )
 
@@ -23,7 +24,9 @@ func (s *Server) Serve() error {
 	}
 	grpcServer := grpc.NewServer()
 	// router
-	orderTransport.Register(grpcServer, s.AppContext)
+	grabTransport.Register(grpcServer, s.AppContext)
+
+	reflection.Register(grpcServer)
 
 	if err := grpcServer.Serve(lis); err != nil {
 		return err

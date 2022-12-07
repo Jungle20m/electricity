@@ -83,7 +83,7 @@ func main() {
 		),
 		fx.Invoke(
 			StartHTTPServer,
-			StartGrpcServer,
+			//StartGrpcServer,
 		),
 	).Run()
 }

@@ -4,7 +4,7 @@
 // 	protoc        v3.21.1
 // source: internal/module/grab/grpc-transport/protoc/order.proto
 
-package protoc
+package proto
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"

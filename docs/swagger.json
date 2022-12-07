@@ -1,0 +1,61 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/todo/{id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "get a todo item by ID",
+                "operationId": "get-todo-by-id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "todo ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.todo"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httpserver.message"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "httpserver.message": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "httpserver.todo": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "task": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
