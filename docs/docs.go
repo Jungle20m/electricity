@@ -16,18 +16,18 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/todo/{id}": {
+        "/grab-electric/orders/customer/{customer_code}": {
             "get": {
                 "produces": [
                     "application/json"
                 ],
-                "summary": "get a todo item by ID",
-                "operationId": "get-todo-by-id",
+                "summary": "get a list order of customer",
+                "operationId": "get-orders",
                 "parameters": [
                     {
                         "type": "string",
                         "description": "todo ID",
-                        "name": "id",
+                        "name": "customer_code",
                         "in": "path",
                         "required": true
                     }
@@ -36,13 +36,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httpserver.todo"
+                            "$ref": "#/definitions/http_transport.Response"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/httpserver.message"
+                            "$ref": "#/definitions/http_transport.Response"
                         }
                     }
                 }
@@ -50,21 +50,23 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "httpserver.message": {
+        "http_transport.Response": {
             "type": "object",
             "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "httpserver.todo": {
-            "type": "object",
-            "properties": {
-                "id": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "error_code": {
                     "type": "string"
                 },
-                "task": {
+                "error_message": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
                     "type": "string"
                 }
             }
@@ -75,8 +77,8 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "",
-	Host:             "",
-	BasePath:         "",
+	Host:             "localhost:8000",
+	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "",
 	Description:      "",

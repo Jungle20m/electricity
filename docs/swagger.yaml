@@ -1,26 +1,30 @@
+basePath: /
 definitions:
-  httpserver.message:
+  http_transport.Response:
     properties:
+      code:
+        type: integer
+      data: {}
+      error_code:
+        type: string
+      error_message:
+        type: string
       message:
         type: string
-    type: object
-  httpserver.todo:
-    properties:
-      id:
-        type: string
-      task:
+      status:
         type: string
     type: object
+host: localhost:8000
 info:
   contact: {}
 paths:
-  /todo/{id}:
+  /grab-electric/orders/customer/{customer_code}:
     get:
-      operationId: get-todo-by-id
+      operationId: get-orders
       parameters:
       - description: todo ID
         in: path
-        name: id
+        name: customer_code
         required: true
         type: string
       produces:
@@ -29,10 +33,10 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httpserver.todo'
+            $ref: '#/definitions/http_transport.Response'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/httpserver.message'
-      summary: get a todo item by ID
+            $ref: '#/definitions/http_transport.Response'
+      summary: get a list order of customer
 swagger: "2.0"

@@ -8,6 +8,34 @@ import (
 	"net/http"
 )
 
+// response represents request response with a response
+type Response struct {
+	Code         int         `json:"code"`
+	Status       string      `json:"status"`
+	ErrorCode    string      `json:"error_code"`
+	ErrorMessage string      `json:"error_message"`
+	Message      string      `json:"message,omitempty"`
+	Data         interface{} `json:"data,omitempty"`
+}
+
+//// todo represents data about a task in the todo list
+//type todo struct {
+//	ID   string `json:"id"`
+//	Task string `json:"task"`
+//}
+//
+//// message represents request response with a message
+//type message struct {
+//	Message string `json:"message"`
+//}
+
+// @Summary get a list order of customer
+// @ID get-orders
+// @Produce json
+// @Param customer_code path string true "todo ID"
+// @Success 200 {object} Response
+// @Failure 404 {object} Response
+// @Router /grab-electric/orders/customer/{customer_code} [get]
 func GetCustomerOrders(appCtx component.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		logger := appCtx.GetLogger()
