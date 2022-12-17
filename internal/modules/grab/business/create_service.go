@@ -2,7 +2,8 @@ package business
 
 import (
 	"context"
-	grabModel "github.com/Jungle20m/electricity/internal/module/grab/model"
+	"github.com/Jungle20m/electricity/common"
+	grabModel "github.com/Jungle20m/electricity/internal/modules/grab/model"
 )
 
 type CreateServiceStorageInterface interface {

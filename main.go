@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/Jungle20m/electricity/common"
 	"github.com/Jungle20m/electricity/config"
-	mGrpcServer "github.com/Jungle20m/electricity/internal/grpcserver"
 	"github.com/Jungle20m/electricity/internal/httpserver"
 	mHttpServer "github.com/Jungle20m/electricity/sdk/httpserver"
 	mLogger "github.com/Jungle20m/electricity/sdk/logger"
@@ -47,8 +46,12 @@ func NewAppContext(conf *config.Config, log *mLogger.Logger, msql *mMysql.Mysql)
 }
 
 func NewHttpServer(appCtx common.AppContext) (*mHttpServer.Server, error) {
+	config := appCtx.GetConfig()
 	handler := httpserver.NewHandler(appCtx)
-	server := mHttpServer.New(handler)
+	server := mHttpServer.New(
+		handler,
+		mHttpServer.WithAddress(config.Web.Host, config.Web.Port),
+	)
 	return server, nil
 }
 
@@ -67,10 +70,10 @@ func StartHTTPServer(lifecycle fx.Lifecycle, server *mHttpServer.Server) {
 	)
 }
 
-func StartGrpcServer(appCtx common.AppContext) {
-	grpcServer := mGrpcServer.NewServer(appCtx)
-	grpcServer.Serve()
-}
+//func StartGrpcServer(appCtx common.AppContext) {
+//	grpcServer := mGrpcServer.NewServer(appCtx)
+//	grpcServer.Serve()
+//}
 
 func main() {
 	fx.New(

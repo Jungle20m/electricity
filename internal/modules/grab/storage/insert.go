@@ -2,7 +2,7 @@ package storage
 
 import (
 	"context"
-	grabModel "github.com/Jungle20m/electricity/internal/module/grab/model"
+	grabModel "github.com/Jungle20m/electricity/internal/modules/grab/model"
 )
 
 func (s *Storage) InsertService(ctx context.Context, service grabModel.ServiceCreate) error {
