@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package service;
+
+option go_package = "internal/module/grab/grpc-transport/proto";
+
+
+service Order {
+  rpc GetOrder (GetOrderRequest) returns (GetOrderResponse);
+}
+
+message GetOrderRequest {
+  int32 order_id = 1;
+}
+
+message GetOrderResponse {
+  int32 id = 1;
+}
