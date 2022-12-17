@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/Jungle20m/electricity/component"
+	"github.com/Jungle20m/electricity/common"
 	"github.com/Jungle20m/electricity/config"
 	mGrpcServer "github.com/Jungle20m/electricity/internal/grpcserver"
 	"github.com/Jungle20m/electricity/internal/httpserver"
@@ -26,7 +26,7 @@ func NewLogger(conf *config.Config) (*mLogger.Logger, error) {
 		mLogger.WithFormatterMode(conf.Log.Formatter),
 		mLogger.WithOutputMode(conf.Log.Output),
 		mLogger.WithDirectory(conf.Log.Folder),
-		mLogger.WithFileName(conf.Log.FileName))
+		mLogger.WithFileName(conf.Log.AppLogFile))
 	if err != nil {
 		return nil, err
 	}
@@ -41,12 +41,12 @@ func NewMysql(conf *config.Config) (*mMysql.Mysql, error) {
 	return msql, nil
 }
 
-func NewAppContext(conf *config.Config, log *mLogger.Logger, msql *mMysql.Mysql) component.AppContext {
-	appCtx := component.NewAppContext(msql, log, conf)
+func NewAppContext(conf *config.Config, log *mLogger.Logger, msql *mMysql.Mysql) common.AppContext {
+	appCtx := common.NewAppContext(msql, log, conf)
 	return appCtx
 }
 
-func NewHttpServer(appCtx component.AppContext) (*mHttpServer.Server, error) {
+func NewHttpServer(appCtx common.AppContext) (*mHttpServer.Server, error) {
 	handler := httpserver.NewHandler(appCtx)
 	server := mHttpServer.New(handler)
 	return server, nil
@@ -67,7 +67,7 @@ func StartHTTPServer(lifecycle fx.Lifecycle, server *mHttpServer.Server) {
 	)
 }
 
-func StartGrpcServer(appCtx component.AppContext) {
+func StartGrpcServer(appCtx common.AppContext) {
 	grpcServer := mGrpcServer.NewServer(appCtx)
 	grpcServer.Serve()
 }

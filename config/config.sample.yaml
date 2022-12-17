@@ -26,3 +26,19 @@ log:
   # 5: DebugLevel
   # 6: TraceLevel
   level: 6
+  # Folder:
+  folder: "./log"
+  # ApiLogFile
+  api_log_file: "api.log"
+  # AppLogFile
+  app_log_file: "application.log"
+
+# External: chứa resource service bên ngoài
+external:
+  doxa_url: "https://www.google.com/"
+
+# Internal: chứa resource nội tại service
+internal:
+  # staging: môi trường dev, staging
+  # production: môi trường production
+  environment: staging

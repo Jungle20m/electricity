@@ -1,9 +1,9 @@
 package http_transport
 
 import (
-	"github.com/Jungle20m/electricity/component"
-	orderBusiness "github.com/Jungle20m/electricity/internal/module/grab/business"
-	orderStorage "github.com/Jungle20m/electricity/internal/module/grab/storage"
+	"github.com/Jungle20m/electricity/common"
+	orderBusiness "github.com/Jungle20m/electricity/internal/modules/grab/business"
+	orderStorage "github.com/Jungle20m/electricity/internal/modules/grab/storage"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -18,25 +18,7 @@ type Response struct {
 	Data         interface{} `json:"data,omitempty"`
 }
 
-//// todo represents data about a task in the todo list
-//type todo struct {
-//	ID   string `json:"id"`
-//	Task string `json:"task"`
-//}
-//
-//// message represents request response with a message
-//type message struct {
-//	Message string `json:"message"`
-//}
-
-// @Summary get a list order of customer
-// @ID get-orders
-// @Produce json
-// @Param customer_code path string true "todo ID"
-// @Success 200 {object} Response
-// @Failure 404 {object} Response
-// @Router /grab-electric/orders/customer/{customer_code} [get]
-func GetCustomerOrders(appCtx component.AppContext) gin.HandlerFunc {
+func GetCustomerOrders(appCtx common.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		logger := appCtx.GetLogger()
 
@@ -56,7 +38,7 @@ func GetCustomerOrders(appCtx component.AppContext) gin.HandlerFunc {
 	}
 }
 
-func GetCustomerOrder(appCtx component.AppContext) gin.HandlerFunc {
+func GetCustomerOrder(appCtx common.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		//msql := appCtx.GetMysql()
 		c.JSON(http.StatusOK, gin.H{
@@ -65,7 +47,7 @@ func GetCustomerOrder(appCtx component.AppContext) gin.HandlerFunc {
 	}
 }
 
-func GetElectricianOrders(appCtx component.AppContext) gin.HandlerFunc {
+func GetElectricianOrders(appCtx common.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		//msql := appCtx.GetMysql()
 		c.JSON(http.StatusOK, gin.H{
@@ -74,7 +56,7 @@ func GetElectricianOrders(appCtx component.AppContext) gin.HandlerFunc {
 	}
 }
 
-func GetElectricianOrder(appCtx component.AppContext) gin.HandlerFunc {
+func GetElectricianOrder(appCtx common.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		//msql := appCtx.GetMysql()
 		c.JSON(http.StatusOK, gin.H{

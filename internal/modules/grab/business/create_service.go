@@ -2,7 +2,6 @@ package business
 
 import (
 	"context"
-	"github.com/Jungle20m/electricity/component"
 	grabModel "github.com/Jungle20m/electricity/internal/module/grab/model"
 )
 
@@ -12,11 +11,11 @@ type CreateServiceStorageInterface interface {
 }
 
 type createServiceBusiness struct {
-	appCtx  component.AppContext
+	appCtx  common.AppContext
 	storage CreateServiceStorageInterface
 }
 
-func NewCreateServiceBusiness(appCtx component.AppContext, storage CreateServiceStorageInterface) *createServiceBusiness {
+func NewCreateServiceBusiness(appCtx common.AppContext, storage CreateServiceStorageInterface) *createServiceBusiness {
 	return &createServiceBusiness{
 		appCtx:  appCtx,
 		storage: storage,

@@ -1,22 +1,22 @@
 package grpc_transport
 
 import (
-	"github.com/Jungle20m/electricity/component"
-	pb "github.com/Jungle20m/electricity/internal/module/grab/grpc-transport/proto"
+	"github.com/Jungle20m/electricity/common"
+	pb "github.com/Jungle20m/electricity/internal/modules/grab/grpc-transport/proto"
 	"google.golang.org/grpc"
 )
 
 type Transportation struct {
 	pb.UnimplementedOrderServer
 	pb.UnimplementedServiceServer
-	AppContext component.AppContext
+	AppContext common.AppContext
 }
 
-func newTransportation(appCtx component.AppContext) *Transportation {
+func newTransportation(appCtx common.AppContext) *Transportation {
 	return &Transportation{AppContext: appCtx}
 }
 
-func Register(server *grpc.Server, appCtx component.AppContext) error {
+func Register(server *grpc.Server, appCtx common.AppContext) error {
 	transport := newTransportation(appCtx)
 	pb.RegisterOrderServer(server, transport)
 	pb.RegisterServiceServer(server, transport)

@@ -1,6 +1,19 @@
-basePath: /
+basePath: /example/v1
 definitions:
-  http_transport.Response:
+  common.ErrorResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        type: string
+      error_code:
+        type: string
+      error_message:
+        type: string
+      message:
+        type: string
+    type: object
+  common.SuccessResponse:
     properties:
       code:
         type: integer
@@ -11,32 +24,115 @@ definitions:
         type: string
       message:
         type: string
+    type: object
+  model.Order:
+    properties:
+      brand_name:
+        type: string
+      code:
+        type: string
+      create_time:
+        type: string
+      customer_id:
+        type: integer
+      id:
+        type: integer
+      order_at_time:
+        type: string
+      status:
+        type: integer
+      update_time:
+        type: string
+      working_site_id:
+        type: integer
+    type: object
+  model.Product:
+    properties:
+      category_id:
+        type: integer
+      code:
+        type: string
+      commission:
+        type: number
+      create_time:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      order_id:
+        type: integer
+      point_back:
+        type: integer
+      point_back_status:
+        type: integer
+      price:
+        type: number
+      quantity:
+        type: integer
       status:
         type: string
+      update_time:
+        type: string
+      working_site_id:
+        type: integer
     type: object
 host: localhost:8000
 info:
   contact: {}
 paths:
-  /grab-electric/orders/customer/{customer_code}:
+  /orders/{id}:
     get:
-      operationId: get-orders
       parameters:
-      - description: todo ID
+      - description: ID
         in: path
-        name: customer_code
+        name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/http_transport.Response'
-        "404":
-          description: Not Found
+            allOf:
+            - $ref: '#/definitions/common.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Order'
+              type: object
+        "400":
+          description: Bad Request
           schema:
-            $ref: '#/definitions/http_transport.Response'
-      summary: get a list order of customer
+            $ref: '#/definitions/common.ErrorResponse'
+      summary: get order by id
+      tags:
+      - orders
+  /products/{id}:
+    get:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Product'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+      summary: get product by id
+      tags:
+      - products
 swagger: "2.0"

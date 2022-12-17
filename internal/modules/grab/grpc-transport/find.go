@@ -2,7 +2,7 @@ package grpc_transport
 
 import (
 	"context"
-	pb "github.com/Jungle20m/electricity/internal/module/grab/grpc-transport/proto"
+	pb "github.com/Jungle20m/electricity/internal/modules/grab/grpc-transport/proto"
 )
 
 func (t *Transportation) GetOrder(ctx context.Context, req *pb.GetOrderRequest) (*pb.GetOrderResponse, error) {

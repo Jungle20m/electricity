@@ -2,18 +2,19 @@ package grpcserver
 
 import (
 	"fmt"
-	"github.com/Jungle20m/electricity/component"
-	grabTransport "github.com/Jungle20m/electricity/internal/module/grab/grpc-transport"
+	"github.com/Jungle20m/electricity/common"
+
+	grabTransport "github.com/Jungle20m/electricity/internal/modules/grab/grpc-transport"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"net"
 )
 
 type Server struct {
-	AppContext component.AppContext
+	AppContext common.AppContext
 }
 
-func NewServer(appCtx component.AppContext) *Server {
+func NewServer(appCtx common.AppContext) *Server {
 	return &Server{AppContext: appCtx}
 }
 

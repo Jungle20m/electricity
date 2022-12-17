@@ -18,17 +18,26 @@ type MysqlConfig struct {
 }
 
 type LogConfig struct {
-	Output    int    `yaml:"output"`
-	Formatter int    `yaml:"formatter"`
-	Level     int    `yaml:"level"`
-	Folder    string `yaml:"folder"`
-	FileName  string `yaml:"file_name"`
+	Output     int    `yaml:"output"`
+	Formatter  int    `yaml:"formatter"`
+	Level      int    `yaml:"level"`
+	Folder     string `yaml:"folder"`
+	ApiLogFile string `yaml:"api_log_file"`
+	AppLogFile string `yaml:"app_log_file"`
 }
 
 type Config struct {
 	Web   WebConfig   `yaml:"web"`
 	Mysql MysqlConfig `yaml:"mysql"`
 	Log   LogConfig   `yaml:"log"`
+}
+
+type ExternalConfig struct {
+	GoogleUrl string `yaml:"google_url"`
+}
+
+type InternalConfig struct {
+	Environment string `yaml:"environment"`
 }
 
 func NewConfig(configFile string) (*Config, error) {

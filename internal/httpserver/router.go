@@ -1,71 +1,56 @@
 package httpserver
 
 import (
-	"github.com/Jungle20m/electricity/component"
+	"github.com/Jungle20m/electricity/common"
 	_ "github.com/Jungle20m/electricity/docs"
-	grabHttpTransport "github.com/Jungle20m/electricity/internal/module/grab/http-transport"
+	"github.com/Jungle20m/electricity/internal/httpserver/middleware"
+	orderTransport "github.com/Jungle20m/electricity/internal/modules/order/http-transport"
+	productTransport "github.com/Jungle20m/electricity/internal/modules/product/http-transport"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"io"
+	"os"
+	"path/filepath"
 )
 
 // @host localhost:8000
-// @BasePath /
+// @BasePath /example/v1
 // @query.collection.format multi
-func NewHandler(appCtx component.AppContext) *gin.Engine {
+func NewHandler(appCtx common.AppContext) *gin.Engine {
+	config := appCtx.GetConfig()
+
 	// Init handler
 	gin.SetMode(gin.ReleaseMode)
 	handler := gin.New()
 
-	// Middleware
-	handler.Use(gin.Logger())
+	// Recovery middleware
+	gin.DisableConsoleColor()
+	f, _ := os.Create(filepath.Join(config.Log.Folder, config.Log.ApiLogFile))
+	gin.DefaultWriter = io.MultiWriter(f)
 	handler.Use(gin.Recovery())
 
+	// Logger middleware
+	handler.Use(gin.Logger())
+
+	// Tracing middleware
+	handler.Use(middleware.RequestID(nil))
+
 	// Router
-	v2 := handler.Group("/grab-electric")
+	v1 := handler.Group("/example/v1")
 	{
-		// Orders
-		order := v2.Group("/orders")
-		order.GET("/customer/:customer_code", grabHttpTransport.GetCustomerOrders(appCtx))
-		order.GET("/:order_code/customer", grabHttpTransport.GetCustomerOrder(appCtx))
+		// Order
+		order := v1.Group("/orders")
+		order.GET("/:id", orderTransport.GetOrderByID(appCtx))
+		//order.GET("/:order_code/customer", orderTransport.GetOrderByID(appCtx))
 
-		// Services
-		service := v2.Group("/services")
-		service.POST("/", grabHttpTransport.CreateService(appCtx))
+		// Product
+		product := v1.Group("/products")
+		product.GET("/:id", productTransport.GetProductByID(appCtx))
 
+		// Swagger
+		v1.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
-
-	// Swagger
-	handler.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return handler
 }
-
-//// response represents response data
-//type Response struct {
-//	Code         int         `json:"code"`
-//	Status       string      `json:"status"`
-//	ErrorCode    string      `json:"error_code"`
-//	ErrorMessage string      `json:"error_message"`
-//	Message      string      `json:"message,omitempty"`
-//	Data         interface{} `json:"data,omitempty"`
-//}
-//
-//// todo represents data about a task in the todo list
-//type todo struct {
-//	ID   string `json:"id"`
-//	Task string `json:"task"`
-//}
-//
-//// message represents request response with a message
-//type message struct {
-//	Message string `json:"message"`
-//}
-//
-//// @Summary get a todo item by ID
-//// @ID get-todo-by-id
-//// @Produce json
-//// @Param id path string true "todo ID"
-//// @Success 200 {object} todo
-//// @Failure 404 {object} message
-//// @Router /todo/{id} [get]
