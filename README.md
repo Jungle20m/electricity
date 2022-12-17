@@ -44,11 +44,32 @@ Các business logic của layer Entities sẽ không quan tâm hay lệ thuộc 
 Giả sử với trường hợp người dùng phải từ 18 tuổi trở lên mới được phép tạo tài khoản thì rule thuộc tính Age trong Entities vẫn không đổi.
 
 ### Use Cases
+***Use Cases*** là layer chứa các business logic ở cấp độ cụ thể từng Use Case (hay application).
+
+VD: Use Case đăng ký tài khoản (tạo mới một Person/Account) sẽ cần tổ hợp một hoặc nhiều Entities tuỳ vào độ phức tạp của Use Case.
+
+Các business logic của Use Case đương nhiên cũng sẽ không quan tâm và lệ thuộc vào việc dữ liệu đến từ đâu, dùng các thư 
+viện nào làm apdapter, dữ liệu thể hiện thế nào,... Vì đấy là nhiệm vụ của layer **Interface Adapters**.
 
 ### Interface Adapters
+***Interface Adapters*** chính là layer phụ trách việc chuyển đổi các format dữ liệu để phù hợp với từng Use Case và Entities. 
+Các format dữ liệu này có thể dùng cho cả bên trong hoặc ngoài ứng dụng.
+
+VD: Thông tin người dùng sẽ có một số thông tin rất nhạy cảm như **Email**, **Phone**, **Address**. Không phải lúc nào dữ liệu cũng 
+về đầy đủ để phục vụ (Web, App). Tương tự với tuỳ vào hệ thống Database mà các adapter phải format dữ liệu hợp lý.
+
+Như vậy dữ liệu đầu vào và ra ở tầng **Interface Apdapter** chỉ cần đủ và hợp lý. Nó sẽ không quan tâm việc dữ liệu sẽ được hiển 
+thị cụ thể như thế nào cũng như được thu thập như thế nào. Vì đó là nhiệm vụ của tầng **Frameworks & Drivers**.
 
 ### Frameworks & Drivers
+***Frameworkd & Drivers*** là tầng ngoài cùng, tổ hợp các công cụ cụ thể phục vụ cho từng nhu cầu của end user như: thiết bị 
+(devices), web, application, databases,... Trong kiến trúc Clean Architecture thì ở tầng này là "nhẹ" nhất vì chúng ta 
+không cần phải viết quá nhiều code.
 
+Trên thực tế thì đây là nơi "biết tất cả" cụ thể các tầng là gì thông qua việc chịu trách nhiệm khởi tạo các objects 
+cho các tầng bên trong (hay còn gọi là **Setup Dependencies**)
+
+> Để các layer trong **Clean Architecture** có thể làm việc được nhưng lại độc lập với nhau thì chúng sẽ dùng các **Interfaces**.
 
 ![Clearn Architecture 2](docs/img/ca2.png)
 
